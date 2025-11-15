@@ -1,0 +1,209 @@
+.rate-page {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.rate-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.rate-back-button {
+  flex-shrink: 0;
+}
+
+.rate-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  font-size: 18px;
+}
+
+.rate-duo {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  max-width: 100%;
+  width: 100%;
+  margin: 0 auto;
+  justify-content: center;
+  align-items: stretch;
+}
+
+.rate-card {
+  cursor: pointer;
+  flex: 1;
+  min-width: 0;
+  max-width: 350px;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), 
+              box-shadow 0.3s ease,
+              border-color 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  border: 2px solid transparent;
+  opacity: 0;
+  transform: translateY(20px);
+  display: flex;
+  flex-direction: column;
+}
+
+.rate-card--appear {
+  animation: cardAppear 0.5s ease-out forwards;
+}
+
+@keyframes cardAppear {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.rate-card:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.rate-card:active {
+  transform: translateY(-2px) scale(0.98);
+}
+
+.rate-card--picked {
+  border-color: var(--tg-theme-link-color, #007AFF);
+  transform: scale(1.05);
+  box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.2),
+              0 8px 24px rgba(0, 122, 255, 0.3);
+}
+
+.rate-card-content {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  position: relative;
+}
+
+.rate-pick-indicator {
+  position: absolute;
+  top: -12px;
+  right: -12px;
+  width: 48px;
+  height: 48px;
+  background: var(--tg-theme-link-color, #007AFF);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  animation: pickPulse 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 4px 12px rgba(0, 122, 255, 0.4);
+}
+
+@keyframes pickPulse {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.rate-checkmark {
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  animation: checkmarkPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
+}
+
+@keyframes checkmarkPop {
+  0% {
+    transform: scale(0) rotate(-180deg);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+.rate-avatar-wrapper {
+  position: relative;
+  width: 100%;
+  min-height: 400px;
+  height: 400px;
+  overflow: hidden;
+  background: var(--tg-theme-bg-color, #ffffff);
+  flex-shrink: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.rate-avatar-image {
+  width: 100%;
+  height: 100%;
+  min-height: 400px;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+  margin: 0;
+  padding: 0;
+}
+
+.rate-card--picked .rate-avatar-image {
+  transform: scale(1.05);
+}
+
+.rate-card--disabled {
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.rate-info {
+  text-align: center;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+}
+
+.rate-name {
+  font-size: 18px;
+}
+
+.rate-class {
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+.rate-rating {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--tg-theme-link-color);
+}
+
+@media (max-width: 768px) {
+  .rate-duo {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .rate-card {
+    max-width: 100%;
+    width: 100%;
+  }
+}

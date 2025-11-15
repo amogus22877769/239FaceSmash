@@ -1,0 +1,41 @@
+.page-transition {
+  width: 100%;
+  min-height: 100vh;
+  position: relative;
+}
+
+.page-transition--hidden {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.page-transition--fadeIn {
+  animation: pageFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.page-transition--fadeOut {
+  animation: pageFadeOut 0.15s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes pageFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pageFadeOut {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+

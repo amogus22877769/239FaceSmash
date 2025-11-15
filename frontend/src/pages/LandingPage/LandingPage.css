@@ -1,0 +1,78 @@
+.landing-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.landing-content {
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  align-content: center;
+}
+
+.landing-title {
+  margin-bottom: 20px;
+  font-size: 32px;
+  font-weight: bold;
+}
+
+.landing-description {
+  margin-bottom: 40px;
+  font-size: 16px;
+  line-height: 1.5;
+  opacity: 0.8;
+}
+
+.landing-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.landing-button,
+.landing-button-outline {
+  font-weight: 500;
+}
+
+.landing-logo {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  background-color: transparent !important;
+}
+
+.landing-logo img {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.landing-button-filter {
+  margin-top: 8px;
+}
+
+.landing-footer-text {
+  margin-top: 30px;
+  font-size: 14px;
+  opacity: 0.7;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.landing-select-wrapper > * {
+    background: inherit !important;
+    /*padding: 0 !important;*/
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.landing-select-wrapper h6 {
+    background: var(--tgui--secondary_bg_color) !important;
+}

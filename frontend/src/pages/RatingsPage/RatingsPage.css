@@ -1,0 +1,140 @@
+.ratings-page {
+  padding: 20px;
+  min-height: 100vh;
+}
+
+.ratings-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.ratings-back-button {
+  flex-shrink: 0;
+}
+
+.ratings-controls {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ratings-tabs {
+  display: flex;
+  gap: 8px;
+}
+
+.ratings-search-wrapper {
+  width: 100%;
+  background: var(--tg-theme-secondary-bg-color);
+  border-radius: 8px;
+}
+
+.ratings-search-wrapper > *, .ratings-search-wrapper h6 {
+  background: var(--tg-theme-secondary-bg-color) !important;
+  color: var(--tg-theme-text-color) !important;
+}
+
+.ratings-loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+}
+
+.ratings-error {
+  text-align: center;
+  padding: 20px;
+  color: var(--tg-theme-destructive-text-color, #ff3333);
+  font-size: 16px;
+}
+
+.ratings-empty {
+  text-align: center;
+  padding: 40px 20px;
+  font-size: 16px;
+  opacity: 0.6;
+}
+
+.ratings-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  padding: 16px 0;
+}
+
+.ratings-cell-before {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ratings-cell {
+  background-color: var(--tg-theme-secondary-bg-color) !important;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.ratings-cell--appear {
+  animation: cellAppear 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.ratings-cell--search-appear {
+  animation: cellSearchAppear 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes cellAppear {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes cellSearchAppear {
+  0% {
+    opacity: 0;
+    transform: translateX(-20px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+.ratings-cell--gold {
+  border: 2px solid #FFD700 !important;
+  border-radius: 8px;
+}
+
+.ratings-cell--silver {
+  border: 2px solid #C0C0C0 !important;
+  border-radius: 8px;
+}
+
+.ratings-cell--bronze {
+  border: 2px solid #CD7F32 !important;
+  border-radius: 8px;
+}
+
+.ratings-rank-badge {
+  font-size: 14px;
+  font-weight: 600;
+  flex-shrink: 0;
+  color: var(--tg-theme-text-color);
+}
+
+.ratings-filter-photo {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.ratings-button-filter {
+  font-weight: 500;
+}

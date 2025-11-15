@@ -1,0 +1,52 @@
+239facesmash.ru {
+    # Handle ACME challenge first (before any redirects)
+    handle /.well-known/acme-challenge/* {
+        file_server
+    }
+    
+    # API routes must be handled first, before file_server
+    @api {
+        path /api/*
+    }
+    handle @api {
+        # Handle CORS preflight
+        @options {
+            method OPTIONS
+        }
+        handle @options {
+            header Access-Control-Allow-Origin "*"
+            header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+            header Access-Control-Allow-Headers "Authorization, Content-Type"
+            header Access-Control-Max-Age "3600"
+            respond 204
+        }
+        
+        reverse_proxy backend:8081 {
+            header_up Host {host}
+            header_up X-Real-IP {remote}
+            header_up X-Forwarded-For {remote}
+            header_up X-Forwarded-Proto {scheme}
+            header_up Authorization {http.request.header.Authorization}
+            transport http {
+                dial_timeout 30s
+                response_header_timeout 30s
+            }
+        }
+        
+        # Add CORS headers to responses
+        header Access-Control-Allow-Origin "*"
+        header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+        header Access-Control-Allow-Headers "Authorization, Content-Type"
+    }
+
+    # Static file serving
+    root * /usr/share/caddy
+    file_server
+    header .css "Content-Type: text/css"
+    header .js "Content-Type: text/javascript"
+    
+    # SPA fallback - try files first, then index.html
+    handle {
+        try_files {path} {path}/ /index.html
+    }
+}

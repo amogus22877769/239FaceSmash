@@ -1,0 +1,121 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0.34
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: bestuser
+      MYSQL_DATABASE: my_db4
+      MYSQL_USER: bestuser
+      MYSQL_PASSWORD: bestuser
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "bestuser", "-pbestuser"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    command: >
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --innodb-buffer-pool-size=512M
+      --max-connections=50
+      --table-open-cache=400
+      --thread-cache-size=8
+      --tmp-table-size=64M
+      --max-heap-table-size=64M
+
+  db-init:
+    image: mysql:8.0.34
+    restart: "no"
+    environment:
+      MYSQL_ROOT_PASSWORD: bestuser
+      MYSQL_DATABASE: my_db4
+      MYSQL_USER: bestuser
+      MYSQL_PASSWORD: bestuser
+    volumes:
+      - ./person.sql:/person.sql:ro
+    networks:
+      - app-network
+    depends_on:
+      db:
+        condition: service_healthy
+      backend:
+        condition: service_started
+    entrypoint: >
+      /bin/bash -c "
+      echo 'Waiting for database and backend to be ready...' &&
+      until mysql -hdb -uroot -pbestuser -e 'SELECT 1' &>/dev/null; do sleep 1; done &&
+      echo 'Waiting for person table to be created by backend...' &&
+      until mysql -hdb -uroot -pbestuser my_db4 -e 'DESCRIBE person' &>/dev/null; do sleep 2; done &&
+      COUNT=$$(mysql -hdb -uroot -pbestuser --default-character-set=utf8mb4 my_db4 -sN -e 'SELECT COUNT(*) FROM person' 2>/dev/null | head -1 || echo '0') &&
+      if [ \"$$COUNT\" = \"0\" ] || [ -z \"$$COUNT\" ]; then
+        echo 'Loading person.sql with real photos...' &&
+        sed 's/INSERT INTO smash_db\\.person/INSERT INTO person/g' /person.sql | mysql -hdb -uroot -pbestuser --default-character-set=utf8mb4 my_db4 2>&1 | grep -v 'Warning' || true &&
+        echo 'person.sql loaded successfully!'
+      else
+        echo \"Database already contains $$COUNT persons. Skipping person.sql load.\"
+      fi
+      "
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/my_db4?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=utf8&connectionCollation=utf8mb4_unicode_ci&useStreamingForLargeResults=true
+      SPRING_DATASOURCE_USERNAME: bestuser
+      SPRING_DATASOURCE_PASSWORD: bestuser
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    networks:
+      - app-network
+    depends_on:
+      db:
+        condition: service_healthy
+    expose:
+      - "8081"
+
+  frontend-build:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    volumes:
+      - frontend_dist:/output
+    command: sh -c "cp -r /usr/share/caddy/* /output/ && ls -la /output/"
+    networks:
+      - app-network
+
+  caddy:
+    image: caddy:alpine
+    container_name: caddy-server
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./frontend/Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+      - frontend_dist:/usr/share/caddy
+    networks:
+      - app-network
+    depends_on:
+      - frontend-build
+    healthcheck:
+      test: [ "CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  db_data:
+  caddy_data:
+  caddy_config:
+  frontend_dist:
+
+networks:
+  app-network:
+    driver: bridge
